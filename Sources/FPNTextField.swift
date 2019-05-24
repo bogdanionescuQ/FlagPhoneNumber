@@ -230,7 +230,9 @@ open class FPNTextField: UITextField, FPNCountryPickerDelegate, FPNDelegate {
         } else {
             text = phoneNumber.nationalNumber.stringValue
         }
-        setFlag(for: FPNCountryCode(rawValue: phoneUtil.getRegionCode(for: phoneNumber))!)
+        if let regionCode = phoneUtil.getRegionCode(for: phoneNumber), let countryCode = FPNCountryCode(rawValue: regionCode) {
+            setFlag(for: countryCode)
+        }
     }
 
 	/// Set the country list excluding the provided countries
