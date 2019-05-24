@@ -284,22 +284,30 @@ open class FPNTextField: UITextField, FPNCountryPickerDelegate, FPNDelegate {
         }
         
         if let phoneNumber = try? phoneUtil.parse(number, defaultRegion: "") {
-            if phoneUtil.isValidNumber(phoneNumber) {
-                nbPhoneNumber = phoneNumber
-                setValid(phoneNumber: phoneNumber)
-                (delegate as? FPNTextFieldDelegate)?.fpnDidValidatePhoneNumber(textField: self, isValid: true)
-            } else {
-                nbPhoneNumber = nil
-                setValid(phoneNumber: phoneNumber)
-                (delegate as? FPNTextFieldDelegate)?.fpnDidValidatePhoneNumber(textField: self, isValid: false)
-            }
+            didEdit(phoneNumber: phoneNumber)
             return
         }
         
         guard let phoneCode = selectedCountry?.phoneCode else {
             return
         }
-        
+		
+        didEdit(number: number, phoneCode: phoneCode)
+	}
+    
+    private func didEdit(phoneNumber: NBPhoneNumber) {
+        if phoneUtil.isValidNumber(phoneNumber) {
+            nbPhoneNumber = phoneNumber
+            setValid(phoneNumber: phoneNumber)
+            (delegate as? FPNTextFieldDelegate)?.fpnDidValidatePhoneNumber(textField: self, isValid: true)
+        } else {
+            nbPhoneNumber = nil
+            setValid(phoneNumber: phoneNumber)
+            (delegate as? FPNTextFieldDelegate)?.fpnDidValidatePhoneNumber(textField: self, isValid: false)
+        }
+    }
+    
+    private func didEdit(number: String, phoneCode: String) {
         var cleanedPhoneNumber = remove(dialCode: phoneCode, in: number)
         cleanedPhoneNumber = clean(string: "\(phoneCode) \(cleanedPhoneNumber)")
         
@@ -322,9 +330,8 @@ open class FPNTextField: UITextField, FPNCountryPickerDelegate, FPNDelegate {
             }
             (delegate as? FPNTextFieldDelegate)?.fpnDidValidatePhoneNumber(textField: self, isValid: false)
         }
-		
-	}
-
+    }
+    
 	private func convert(format: FPNFormat) -> NBEPhoneNumberFormat {
 		switch format {
 		case .E164:
