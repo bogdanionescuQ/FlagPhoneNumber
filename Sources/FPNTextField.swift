@@ -422,7 +422,7 @@ open class FPNTextField: UITextField, FPNCountryPickerDelegate, FPNDelegate {
 	private func updatePlaceholder() {
 		if let countryCode = selectedCountry?.code {
 			do {
-				let example = try phoneUtil.getExampleNumber(countryCode.rawValue)
+                let example = try phoneUtil.getExampleNumber(forType: countryCode.rawValue, type: .MOBILE)
 				let phoneNumber = "+\(example.countryCode.stringValue)\(example.nationalNumber.stringValue)"
 
 				if let inputString = formatter?.inputString(phoneNumber) {
